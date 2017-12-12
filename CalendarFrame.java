@@ -1,5 +1,6 @@
 
 import java.awt.Color;
+import java.awt.Container;
 import java.awt.Dialog.ModalityType;
 import java.awt.EventQueue;
 import java.awt.Font;
@@ -11,23 +12,21 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.util.Calendar;
- 
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTable;
-import javax.swing.SwingConstants;
+import java.text.*;
+
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+
+import javax.swing.*;
  
 public class CalendarFrame extends JFrame {
  
     private JPanel contentPane;
     private JTable dayViewTable;
     private JLabel label;
+    private JLabel today;
     private JButton leftButton;
     private JButton rightButton;
     private JTable weekBarTable;
@@ -35,10 +34,15 @@ public class CalendarFrame extends JFrame {
     private JButton addButton;
  
     private boolean focus = false;
- 
+    
+    JLabel todaydate;
+
+    
     int todayY;
     int todayM;
     int todayD;
+    int serve=1;
+    
  
     Calendar calendar = Calendar.getInstance();
  
@@ -47,7 +51,6 @@ public class CalendarFrame extends JFrame {
     private JLabel console;
  
     public static void main(String[] args) {
- 
         EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
@@ -57,15 +60,28 @@ public class CalendarFrame extends JFrame {
                     e.printStackTrace();
                 }
             }
-        });
+        });		
+        
     }
- 
+    
     public CalendarFrame() {
-        setResizable(false);
+//        setResizable(false);
         setFont(new Font("±¼¸²", Font.PLAIN, 12));
-        setTitle("Calendar");
+        setTitle("Ä¶¸°-µ·");
+		setSize(860, 600);
+		setLocation(45, 40);
+		
+//		JComboBox comboBox;
+//		
+//		comboBox = new JComboBox();
+//		
+//		comboBox.addItem("¼öÀÔ");
+//		comboBox.addItem("ÁöÃâ");
+//		add(comboBox, "Center");
+
+		
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setBounds(100, 100, 530, 525);
+//        setBounds(100, 100, 700, 500);
         contentPane = new JPanel();
         contentPane.setBackground(new Color(255, 255, 255));
         contentPane.addMouseWheelListener(new MouseWheelListener() {
@@ -76,6 +92,20 @@ public class CalendarFrame extends JFrame {
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         setContentPane(contentPane);
         contentPane.setLayout(null);
+        
+//        JPanel p0 = new JPanel();
+//        JPanel p2 = new JPanel();
+//        
+//        buyLabel1 = new JLabel("ÁöÃâ³»¿ë :");
+//        buySelect = new JComboBox(select);
+//        
+//        p0.add(new JLabel(""));
+//        p2.add(buyLabel1);
+//        p2.add(buySelect); 
+//        
+//        add(p0);add(p2);
+//        
+        setVisible(true);
  
         // ¿äÀÏ Ç¥½Ã Å×ÀÌºí
         String[] weekColumns = { "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" };
@@ -97,9 +127,10 @@ public class CalendarFrame extends JFrame {
  
         label = new JLabel("");
         label.setHorizontalAlignment(SwingConstants.CENTER);
-        label.setFont(new Font("¸¼Àº °íµñ", Font.BOLD, 20));
-        label.setBounds(70, 10, 384, 54);
+        label.setFont(new Font("¸¼Àº °íµñ", Font.BOLD, 26));
+        label.setBounds(70, 10, 660, 54);					// x¿ù ±ÛÀÚ
         contentPane.add(label);
+        
  
         DefaultTableCellRenderer top = new DefaultTableCellRenderer();
         top.setVerticalAlignment(SwingConstants.TOP);
@@ -120,8 +151,8 @@ public class CalendarFrame extends JFrame {
                 do_leftButton_actionPerformed(e);
             }
         });
-        leftButton.setFont(new Font("±¼¸²", Font.PLAIN, 16));
-        leftButton.setBounds(12, 17, 46, 46);
+        leftButton.setFont(new Font("±¼¸²", Font.PLAIN, 20));
+        leftButton.setBounds(12, 17, 450, 46);
         
         // ¹öÆ° Åõ¸íÈ­
         leftButton.setOpaque(false);
@@ -136,41 +167,41 @@ public class CalendarFrame extends JFrame {
                 do_rightButton_actionPerformed(e);
             }
         });
-        rightButton.setFont(new Font("±¼¸²", Font.PLAIN, 16));
-        rightButton.setBounds(466, 17, 46, 46);
+        rightButton.setFont(new Font("±¼¸²", Font.PLAIN, 20));
+        rightButton.setBounds(466, 17, 210, 46);
         rightButton.setOpaque(false);
         rightButton.setContentAreaFilled(false);
         rightButton.setBorderPainted(false);
         rightButton.setFocusable(false);
         contentPane.add(rightButton);
  
-        todayButton = new JButton("\uC624\uB298");
-        todayButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                do_todayButton_actionPerformed(e);
-            }
-        });
-        todayButton.setBackground(SystemColor.control);
-        todayButton.setFont(new Font("¸¼Àº °íµñ", Font.PLAIN, 12));
-        todayButton.setBounds(377, 61, 79, 23);
-        todayButton.setOpaque(false);
-        todayButton.setBorderPainted(false);
-        todayButton.setFocusable(false);
-        contentPane.add(todayButton);
- 
-        addButton = new JButton("\uFF0B");
-        addButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                do_addButton_actionPerformed(e);
-            }
-        });
-        addButton.setBackground(SystemColor.control);
-        addButton.setFont(new Font("¸¼Àº °íµñ", Font.PLAIN, 14));
-        addButton.setBounds(452, 61, 60, 23);
-        addButton.setOpaque(false);
-        addButton.setFocusable(false);
-        addButton.setBorderPainted(false);
-        contentPane.add(addButton);
+//        todayButton = new JButton("\uC624\uB298");
+//        todayButton.addActionListener(new ActionListener() {
+//            public void actionPerformed(ActionEvent e) {
+//                do_todayButton_actionPerformed(e);
+//            }
+//        });
+//        todayButton.setBackground(SystemColor.control);
+//        todayButton.setFont(new Font("¸¼Àº °íµñ", Font.PLAIN, 12));
+//        todayButton.setBounds(377, 61, 79, 23);
+//        todayButton.setOpaque(false);
+//        todayButton.setBorderPainted(false);
+//        todayButton.setFocusable(false);
+//        contentPane.add(todayButton);
+// 
+//        addButton = new JButton("\uFF0B");
+//        addButton.addActionListener(new ActionListener() {
+//            public void actionPerformed(ActionEvent e) {
+//                do_addButton_actionPerformed(e);
+//            }
+//        });
+//        addButton.setBackground(SystemColor.control);
+//        addButton.setFont(new Font("¸¼Àº °íµñ", Font.PLAIN, 14));
+//        addButton.setBounds(452, 61, 60, 23);
+//        addButton.setOpaque(false);
+//        addButton.setFocusable(false);
+//        addButton.setBorderPainted(false);
+//        contentPane.add(addButton);
  
         weekBarTable = new JTable(weekTable) {
             private static final long serialVersionUID = 1L;
@@ -188,7 +219,7 @@ public class CalendarFrame extends JFrame {
         weekBarTable.setRowHeight(25);
         weekBarTable.setFillsViewportHeight(true);
         weekBarTable.setBorder(new LineBorder(new Color(0, 0, 0)));
-        weekBarTable.setBounds(12, 85, 500, 23);
+        weekBarTable.setBounds(12, 85, 799, 25);						 // À§¿¡ ¿äÀÏ ÀûÈù Ä­ Å©±â
  
         weekBarTable.getColumnModel().getColumn(1).setCellRenderer(center);
         weekBarTable.getColumnModel().getColumn(2).setCellRenderer(center);
@@ -218,9 +249,9 @@ public class CalendarFrame extends JFrame {
                 });
                 dayViewTable.setFont(new Font("¸¼Àº °íµñ", Font.PLAIN, 12));
                 dayViewTable.setBorder(new LineBorder(new Color(0, 0, 0)));
-                dayViewTable.setRowHeight(60);
+                dayViewTable.setRowHeight(70);							// ´Þ·Â ³¯Â¥ ³ª¿Â ÇÑ Ä­ ³ôÀÌ
                 dayViewTable.setFillsViewportHeight(true);
-                dayViewTable.setBounds(12, 107, 500, 360);
+                dayViewTable.setBounds(12, 109, 799, 420);				// ´Þ·Â  ³¯Â¥ ³ª¿Â Ä­ Å©±â
                 dayViewTable.getColumnModel().getColumn(0).setCellRenderer(top);
                 dayViewTable.getColumnModel().getColumn(1).setCellRenderer(top);
                 dayViewTable.getColumnModel().getColumn(2).setCellRenderer(top);
@@ -235,13 +266,15 @@ public class CalendarFrame extends JFrame {
                 console = new JLabel("");
                 console.setFont(new Font("¸¼Àº °íµñ", Font.PLAIN, 12));
                 console.setHorizontalAlignment(SwingConstants.RIGHT);
-                console.setBounds(12, 472, 500, 15);
+                console.setBounds(12, 472, 750, 15);
                 contentPane.add(console);
  
         todayY = calendar.get(Calendar.YEAR);
         todayM = calendar.get(Calendar.MONTH);
         todayD = calendar.get(Calendar.DATE);
  
+        
+        
         // ½ÇÇà½Ã ³¯Â¥ »Ñ¸®¸é¼­ ¿À´Ã·Î Æ÷Ä¿½Ì
         refresh();
         todayFocus();
@@ -289,6 +322,8 @@ public class CalendarFrame extends JFrame {
         
         }
     }
+    
+    
  
     
     
@@ -318,6 +353,10 @@ public class CalendarFrame extends JFrame {
     protected void do_todayButton_actionPerformed(ActionEvent e) {
         calendar.set(todayY, todayM, todayD);
         refresh();
+//        setSize(1300, 600);
+        
+//        Dataframe df = new Dataframe(this);
+//        df.Run();
         todayFocus();
     }
  
@@ -333,16 +372,31 @@ public class CalendarFrame extends JFrame {
         }
  
     }
+    
  
     // ´õºíÅ¬¸¯ ÀÌº¥Æ®
     protected void do_dayViewTable_mouseClicked(MouseEvent e) {
         
         focus = true;
- 
-        if (e.getClickCount() == 2) {
+        if (e.getClickCount() == 2) {				// µÎ ¹ø Å¬¸¯ÇÏ¸é Ä¿Áü
+//            setSize(1300, 600);
+//            JFrame f = new JFrame(" ");
+//            JFrame panel=new JFrame();
+//            f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//            f.getContentPane().add(panel, "Center");
+//            f.setVisible(true);
+//        	  serve++;
+        	  Doubleclickframe df = new Doubleclickframe(this);
+        	  df.Run();
             addAgenda();
         }
+        else if (e.getClickCount()==3) {			// ¼¼ ¹ø Å¬¸¯ÇÏ¸é ¿ø·¡Å©±â
+            setSize(860, 600);
+            addAgenda();        	
+        }
     }
+
+
  
     // ÀÏÁ¤Ãß°¡ ¹öÆ°
     protected void do_addButton_actionPerformed(ActionEvent e) {
