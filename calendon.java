@@ -1,9 +1,5 @@
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.io.*;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -11,6 +7,7 @@ import java.sql.Statement;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.applet.*;
 
 import java.sql.PreparedStatement;
 
@@ -21,6 +18,15 @@ import java.text.SimpleDateFormat;
 import java.sql.*;
 import java.util.*;
 import java.text.*;
+
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
+import javax.swing.JPanel;
 
 class CalendarDataManager extends JFrame{ // 6*7배열에 나타낼 달력 값을 구하는 class
 	static final int CAL_WIDTH = 7;
@@ -107,7 +113,10 @@ public class calendon extends CalendarDataManager implements ActionListener, Ite
 	JFrame mainFrame;
 	
 		ImageIcon icon = new ImageIcon ( Toolkit.getDefaultToolkit().getImage(getClass().getResource("icon.png")));
-	
+		ImageIcon myPicture = new ImageIcon ( Toolkit.getDefaultToolkit().getImage(getClass().getResource("main.png")));
+		JLabel picLabel = new JLabel(myPicture);
+		
+		
 	JPanel calOpPanel;
 		JButton todayBut;
 		JLabel todayLab;
@@ -135,7 +144,9 @@ public class calendon extends CalendarDataManager implements ActionListener, Ite
 		JPanel buttonPanel;
 		JPanel tablePanel;
 		JButton update, delete;
-		String fieldname[]= {"구분", "분류", "메모", "수입", "지출"};
+		String fieldname[]= {"<html><font face='맑은 고딕' size=3>구분</html>", "<html><font face='맑은 고딕' size=3>분류</html>",
+									"<html><font face='맑은 고딕' size=3>메모</html>", "<html><font face='맑은 고딕' size=3>수입</html>",
+									"<html><font face='맑은 고딕' size=3>지출</html>"};
 		DefaultTableModel model = new DefaultTableModel(fieldname, 0);
 		Container pane;
 		JPanel dataPanel;
@@ -158,6 +169,8 @@ public class calendon extends CalendarDataManager implements ActionListener, Ite
 	JPanel homePanel3;
 	JPanel incomeexpendc;
 	JPanel incomeexpendd;
+	JPanel mainpanel;
+	JPanel mainpanelpicture;
 	 JTextField codeField;
 	 JTextField memo;
 	 String strSql;
@@ -169,6 +182,7 @@ public class calendon extends CalendarDataManager implements ActionListener, Ite
 	 JLabel incomexpendLable;
 	 JComboBox buySelect;
 	 JComboBox incomexpend;
+	 JButton calendonpicture;
 	 String select[] = {"선택", "수입", "지출"}; 
 		String income[] = {"용돈", "월급", "금융소득", "부수입", "기타"};
 		String expend[] = {"식비", "미용/패션", "교통", "생활", "건강", "기타"};
@@ -197,6 +211,7 @@ public class calendon extends CalendarDataManager implements ActionListener, Ite
 	JPanel frameBottomPanel;
 	JPanel calendonmain;
 	
+	
 		JLabel bottomInfo = new JLabel("Welcome to Memo Calendar!");
 	//상수, 메세지
 	final String WEEK_DAY_NAME[] = { "SUN", "MON", "TUE", "WED", "THR", "FRI", "SAT" };
@@ -213,7 +228,7 @@ public class calendon extends CalendarDataManager implements ActionListener, Ite
 	public calendon (){ //구성요소 순으로 정렬되어 있음. 각 판넬 사이에 빈줄로 구별
 		mainFrame = new JFrame(title);
 		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		mainFrame.setSize(1400,600);
+		mainFrame.setSize(1400,650);
 		mainFrame.setLocationRelativeTo(null);
 		mainFrame.setResizable(false);
 		mainFrame.setIconImage(icon.getImage());
@@ -225,23 +240,28 @@ public class calendon extends CalendarDataManager implements ActionListener, Ite
 		}		
 						
 		calOpPanel = new JPanel();
-			todayBut = new JButton("Today");
+			todayBut = new JButton("TODAY");
 			todayBut.setToolTipText("Today");
+			todayBut.setFont(new Font("맑은 고딕", Font.BOLD, 12));
 			todayBut.addActionListener(lForCalOpButtons);
 			todayLab = new JLabel(today.get(Calendar.YEAR)+"년 "+(today.get(Calendar.MONTH) + 1)+"월 "+today.get(Calendar.DAY_OF_MONTH)+"일");
 			lYearBut = new JButton("<<");
+			lYearBut.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
 			lYearBut.setToolTipText("Previous Year");
 			lYearBut.addActionListener(lForCalOpButtons);
 			lMonBut = new JButton("<");
+			lMonBut.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
 			lMonBut.setToolTipText("Previous Month");
 			lMonBut.addActionListener(lForCalOpButtons);
 			curMMYYYYLab = new JLabel("<html><table width=200><tr><th>"+calYear+"년 "+((calMonth+1)<10?"&nbsp;":"")+(calMonth+1)+"월 "+"</th></tr></table></html>");
 			curMMYYYYLab.setFont(new Font("맑은 고딕", Font.BOLD, 20));
 			todayLab.setFont(new Font("맑은 고딕", Font.BOLD, 12));
 			nMonBut = new JButton(">");
+			nMonBut.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
 			nMonBut.setToolTipText("Next Month");
 			nMonBut.addActionListener(lForCalOpButtons);
 			nYearBut = new JButton(">>");
+			nYearBut.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
 			nYearBut.setToolTipText("Next Year");
 			nYearBut.addActionListener(lForCalOpButtons);
 			calOpPanel.setLayout(new GridBagLayout());
@@ -256,7 +276,7 @@ public class calendon extends CalendarDataManager implements ActionListener, Ite
 			calOpGC.anchor = GridBagConstraints.WEST;
 			calOpGC.fill = GridBagConstraints.NONE;
 			calOpPanel.add(todayBut,calOpGC);
-			calOpGC.gridwidth = 3;
+			calOpGC.gridwidth = 5;
 			calOpGC.gridx = 2;
 			calOpGC.gridy = 1;
 			calOpPanel.add(todayLab,calOpGC);
@@ -334,6 +354,8 @@ public class calendon extends CalendarDataManager implements ActionListener, Ite
 			p3=new JPanel();
 			p4=new JPanel();
 			p5=new JPanel();
+			mainpanel = new JPanel();
+			mainpanelpicture = new JPanel();
 			incomeexpendd=new JPanel();
 			homePanel = new JPanel();
 			homePanel2 = new JPanel();
@@ -341,6 +363,9 @@ public class calendon extends CalendarDataManager implements ActionListener, Ite
 			tablePanel = new JPanel(new GridLayout(1,1));
 			buttonPanel = new JPanel();
 			model = new DefaultTableModel(fieldname, 0);
+			calendonmain = new JPanel();
+
+	           
 				
 			table = new JTable(model);
 			table.setFont(new Font("맑은 고딕", Font.PLAIN, 13));
@@ -348,7 +373,7 @@ public class calendon extends CalendarDataManager implements ActionListener, Ite
 			table.getTableHeader().setResizingAllowed(false);
 			table.setShowVerticalLines(false);
 			table.setShowHorizontalLines(false);
-			update = new JButton("수정");
+			update = new JButton("Reset");
 			delete = new JButton("삭제");
 			delete.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
 			update.setBorderPainted(false);
@@ -357,6 +382,7 @@ public class calendon extends CalendarDataManager implements ActionListener, Ite
 			delete.setBackground(Color.WHITE);
 			
 			delete.addActionListener(this);
+			update.addActionListener(this);
 			scroll = new JScrollPane(table,  JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 			update.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
 			pane = new JPanel();
@@ -365,13 +391,13 @@ public class calendon extends CalendarDataManager implements ActionListener, Ite
 			
 			tablePanel.add(scroll);	
 			
-			buttonPanel.add(update);
 			buttonPanel.add(delete);
+			buttonPanel.add(update);
 
 			pane.add(buttonPanel);
 			
-			homePanel3.add(update);
 			homePanel3.add(delete);
+			homePanel3.add(update);
 
 			nextPanel =new JPanel();	
 			nextPanel2 = new JPanel();
@@ -401,11 +427,20 @@ public class calendon extends CalendarDataManager implements ActionListener, Ite
 			buyLabel2.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
 			codeField = new JTextField(6);
 			codeField.setBorder(null);
+//			codeField.setSize(30, 40);
 			save = new JButton("입력");
 			save.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
 			save.setBorderPainted(false);
 			save.setBackground(Color.WHITE);
 			save.addActionListener(this);
+			
+			calendonpicture = new JButton(new ImageIcon ( Toolkit.getDefaultToolkit().getImage(getClass().getResource("main.png"))));
+			calendonpicture.setBorderPainted(false);
+			calendonpicture.setContentAreaFilled(false);
+			calendonpicture.addActionListener(this);
+//			calendonpicture.setSize(1500, 600);
+//			calendonpicture.add(picLabel);
+
 
 			  memoPanel.add(selectedDate, BorderLayout.SOUTH);
   
@@ -418,7 +453,7 @@ public class calendon extends CalendarDataManager implements ActionListener, Ite
 			  nextPanel.add(buyLabel2);
 			  nextPanel.add(codeField);
 			  nextPanel.add(save);
-			  nextPanel.setBorder(BorderFactory.createTitledBorder("입력"));
+			  nextPanel.setBorder(BorderFactory.createTitledBorder("<html><font face='맑은 고딕' size=2>입력</html>"));
 			  nextPanel.setFont(new Font("맑은 고딕", Font.BOLD, 14));
 			  
 //			  incomeb = new JLabel();
@@ -498,12 +533,23 @@ public class calendon extends CalendarDataManager implements ActionListener, Ite
 		frameBottomPanel = new JPanel();
 		frameBottomPanel.add(bottomInfo);
 		
+		mainpanel.setLayout(new BorderLayout());
+		mainpanel.add(frameSubPanelWest, BorderLayout.WEST);
+		mainpanel.add(frameSubPanelEast, BorderLayout.CENTER);
+		mainpanel.add(frameBottomPanel, BorderLayout.SOUTH);
+		mainpanel.setVisible(true);		
+		
+		mainpanelpicture.setLayout(new BorderLayout());
+		mainpanelpicture.add(calendonpicture);
+		mainpanelpicture.setVisible(true);
 		//frame에 전부 배치
 		mainFrame.setLayout(new BorderLayout());
-		mainFrame.add(frameSubPanelWest, BorderLayout.WEST);
-		mainFrame.add(frameSubPanelEast, BorderLayout.CENTER);
-		mainFrame.add(frameBottomPanel, BorderLayout.SOUTH);
-//		mainFrame.add(calendonmain);
+//		mainFrame.add(mainpanel);
+		mainFrame.add(mainpanelpicture);
+//		mainFrame.add(frameSubPanelWest, BorderLayout.WEST);
+//		mainFrame.add(frameSubPanelEast, BorderLayout.CENTER);
+//		mainFrame.add(frameBottomPanel, BorderLayout.SOUTH);
+//		mainFrame.add(calendonpicture, BorderLayout.NORTH);
 		mainFrame.setVisible(true);		
 		
 		focusToday(); //현재 날짜에 focus를 줌 (mainFrame.setVisible(true) 이후에 배치해야함)
@@ -547,7 +593,7 @@ public class calendon extends CalendarDataManager implements ActionListener, Ite
 	private void focusToday(){
 		if(today.get(Calendar.DAY_OF_WEEK) == 1) {
 			dateButs[today.get(Calendar.WEEK_OF_MONTH)][today.get(Calendar.DAY_OF_WEEK)-1].requestFocusInWindow();
-//			dateButs[today.get(Calendar. )][today.get(Calendar.DAY_OF_WEEK)-1].setBackground(new Color(250, 244, 192));
+//			dateButs[today.get(Calendar.WEEK_OF_MONTH)][today.get(Calendar.DAY_OF_WEEK)-1].setBackground(new Color(250, 244, 192));
 		}
 
 		else {
@@ -696,6 +742,125 @@ public class calendon extends CalendarDataManager implements ActionListener, Ite
 	                  } catch (Exception e2) {}
 	              }
 	              model2.removeRow(row);    // 테이블 상의 한줄 삭제
+	          } else if (e.getSource() == update) {
+	        	  int i2=JOptionPane.showConfirmDialog(null, (calMonth+1)+"월 "+calDayOfMon+"일의 내용을 모두 삭제 합니다", "Reset", JOptionPane.OK_CANCEL_OPTION,JOptionPane.INFORMATION_MESSAGE);
+	        	   if (i2==0) {
+	        		 try{
+	        			 Class.forName("com.mysql.jdbc.Driver");
+	        			 }catch(ClassNotFoundException ee){System.out.println("JDBC driver loading error:");}
+	        			  try{
+	        			   Connection con;
+	        			   String jdbcUrl = "jdbc:mysql://localhost:3306/localhost";
+	        			   String db_id = "root";
+	        			   String db_pw = "ded3507**"; // 사용자 설정 비밀번호.
+	        			   con = (Connection) DriverManager.getConnection(jdbcUrl, db_id, db_pw);
+
+	        			   Statement st=con.createStatement();
+	        			   
+	        			   String strSql = "delete from cashdiary where year="+calYear+" and month="+(calMonth+1)+" and day="+calDayOfMon+";";
+	        			   st.executeUpdate(strSql);
+	        			   
+	        			   st.close();
+	        			   con.close();
+	        			   }catch(SQLException ee){System.out.println("SQLException: "+ee.getMessage());}
+	        			  try {
+	        		          // 연결
+	        		          Connection con;
+	        		   	   String jdbcUrl = "jdbc:mysql://localhost:3306/localhost";
+	        		   	   String db_id = "root";
+	        		   	   String db_pw = "ded3507**"; // 사용자 설정 비밀번호.
+	        		   	   con = (Connection) DriverManager.getConnection(jdbcUrl, db_id, db_pw);
+	        		   	   Statement st=con.createStatement();
+	        		      	
+	        		      	
+	        		   	   st = con.createStatement();
+	        		       rs = st.executeQuery("select * from cashdiary where year = "+calYear+" and month = " +(calMonth+1)+ " and day = " +calDayOfMon+";");
+
+	        		      int incomea = 0;
+	        		      int expenda = 0;
+	        		      
+	        		      for (int i = 0; i < model.getRowCount();) {
+	        		          model.removeRow(0);
+	        		      }
+
+	        		      while (rs.next()) {
+	        		          Object data[] = { rs.getString(2), rs.getString(3),
+	        		                  rs.getString(4), rs.getInt(5), rs.getInt(6) };
+	        		          model.addRow(data); //DefaultTableModel에 레코드 추가
+	        		          incomea+=rs.getInt(5);
+	        		          expenda+=rs.getInt(6);  
+	        		      }
+	        		      
+	        		      int incomed=incomea;
+	        		      String incomec=Integer.toString(incomed);
+	        		      int expendd=expenda;
+	        		      String expendc=Integer.toString(expendd);
+	        		      
+	        		      	String a[] = new String[2];
+	        		      	a[0]=incomec;
+	        		      	a[1]=expendc;
+	        				
+	        					incomeb.setText("총 수입 : " + a[0] + "원,   총 지출 : " + a[1] + "원");    
+	        		      
+	        		      for(int i=0;i<CAL_HEIGHT;i++){
+	        					for(int j=0;j<CAL_WIDTH;j++){
+	        						String fontColor="black";
+	        						String fontColor2="blue";
+	        						String fontColor3="red";
+	        						if(j==0) fontColor="red";
+	        						else if(j==6) fontColor="blue";
+	        						
+	        						rs = st.executeQuery("select * from cashdiary where year = "+calYear+" and month = " +(calMonth+1)+ " and day = " +calDates[i][j]+";");
+	        						
+	        						int incomea1 = 0;
+	        			            int expenda1 = 0;
+	        			          
+	        			            // DefaultTableModel에 있는 기존 데이터 지우기
+	        			            
+	        			            while (rs.next()) {
+	        			                Object data[] = { rs.getString(2), rs.getString(3),
+	        			                		rs.getString(4), rs.getInt(5), rs.getInt(6) };
+	        			                incomea1+=rs.getInt(5);
+	        			                expenda1+=rs.getInt(6);
+	        			            }
+	        						
+	        			           
+	        			            if ((incomea1==0)&&(expenda1==0)) {
+	        							fontColor2="white";
+	        							fontColor3="white";
+	        			            }
+	        			            
+	        						File f =new File("MemoData/"+calYear+((calMonth+1)<10?"0":"")+(calMonth+1)+(calDates[i][j]<10?"0":"")+calDates[i][j]+".txt");
+	        						if(f.exists()){
+	        							dateButs[i][j].setText("<html><b><font color="+fontColor+">"+calDates[i][j]+"</font></b></html>");
+	        						}
+	        						else dateButs[i][j].setText("<html><font color="+fontColor+" face='맑은 고딕'><b>"+calDates[i][j]+"</b></font><br><font color="+fontColor2+" size=2 face='맑은 고딕'> 수입: "+incomea1+"원</font><br><font color="+fontColor3+" size=2 face='맑은 고딕'>지출: "+expenda1+"원</font></html>");
+
+	        						JLabel todayMark = new JLabel("<html><b><font color=green> ** </b></html>");
+	        						dateButs[i][j].removeAll();
+
+	        						if(calMonth == today.get(Calendar.MONTH) &&
+	        								calYear == today.get(Calendar.YEAR) &&
+	        								calDates[i][j] == today.get(Calendar.DAY_OF_MONTH)){
+	        							p4 = new JPanel();
+	        							p4.setBackground(new Color(255, 255, 228));
+	        							dateButs[i][j].add(todayMark);
+	        							dateButs[i][j].setToolTipText("Today");
+	        						}
+	        						
+	        						if(calDates[i][j] == 0) dateButs[i][j].setVisible(false);
+	        						else dateButs[i][j].setVisible(true);
+	        						}
+	        		      		}
+	        			  }
+	        			  catch(SQLException e1) {
+//	        							e1.printStackTrace();
+	        						}  
+	        			 		}
+	          } else if (e.getSource() == calendonpicture) {
+//	      		mainpanel.setVisible(true);		
+	      		mainpanelpicture.setVisible(false);
+	        	mainFrame.add(mainpanel);
 	          }
 	    }
                 
@@ -843,14 +1008,13 @@ public class calendon extends CalendarDataManager implements ActionListener, Ite
 	 		} 
 	  }
 	
+	
 	   public void userSelectAll(String show) {
 	        try {
 	            st = con.createStatement();
 	            rs = st.executeQuery("select * from cashdiary");
 	 
-	            // DefaultTableModel에 있는 기존 데이터 지우기
 	            
-	 
 	            while (rs.next()) {
 	                Object data[] = { rs.getString(1), rs.getString(2),
 	                        rs.getInt(3), rs.getString(4) };
@@ -911,7 +1075,7 @@ public class calendon extends CalendarDataManager implements ActionListener, Ite
 				}
 				else dateButs[i][j].setText("<html><font color="+fontColor+" face='맑은 고딕'><b>"+calDates[i][j]+"</b></font><br><font color="+fontColor2+" size=2 face='맑은 고딕'> 수입: "+incomea+"원</font><br><font color="+fontColor3+" size=2 face='맑은 고딕'>지출: "+expenda+"원</font></html>");
 
-				JLabel todayMark = new JLabel("<html><b><font color=green> ** </b></html>");
+				JLabel todayMark = new JLabel("<html><font color=#747474 face='맑은 고딕' size=2>　　　<b>(TODAY)</b><br><br<br></html>");
 				dateButs[i][j].removeAll();
 
 				if(calMonth == today.get(Calendar.MONTH) &&
@@ -1026,10 +1190,6 @@ public class calendon extends CalendarDataManager implements ActionListener, Ite
 			
     			incomeb.setText("총 수입 : " + a[0] + "원,   총 지출 : " + a[1] + "원");
 
-            
-
-            
-            
          }catch (SQLException e1) {
 //				e1.printStackTrace();
 			}
